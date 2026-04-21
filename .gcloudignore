@@ -1,0 +1,13 @@
+.gcloudignore
+.git
+.gitignore
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.env
+.env.*
+.DS_Store
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!.npmrc

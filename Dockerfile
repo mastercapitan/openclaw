@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.7
+c# syntax=docker/dockerfile:1.7
 
 # Opt-in extension dependencies at build time (space-separated directory names).
 # Example: docker build --build-arg OPENCLAW_EXTENSIONS="diagnostics-otel matrix" .
@@ -266,17 +266,6 @@ ENV NODE_ENV=production
 USER node
 
 # Start gateway server with default config.
-# Binds to loopback (127.0.0.1) by default for security.
-#
-# IMPORTANT: With Docker bridge networking (-p 18789:18789), loopback bind
-# makes the gateway unreachable from the host. Either:
-#   - Use --network host, OR
-#   - Override --bind to "lan" (0.0.0.0) and set auth credentials
-#
-# Built-in probe endpoints for container health checks:
-#   - GET /healthz (liveness) and GET /readyz (readiness)
-#   - aliases: /health and /ready
-# For external access from host/ingress, override bind to "lan" and set auth.
-HEALTHCHECK --interval=3m --timeout=10s --start-period=15s --retries=3 \
-  CMD node -e "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
-CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]
+# Binds to all interfaces (0.0.0.0) to be reachable within Cloud Run / Docker.
+# Uses the PORT environment variable provided by Cloud Run, falling back to 18789.
+CMD ["sh", "-c", "node openclaw.mjs gateway --allow-unconfigured --bind 0.0.0.0 --port ${PORT:-18789}"]
