@@ -9,6 +9,15 @@ steps:
     '-t', 'us-central1-docker.pkg.dev/gen-lang-client-0544799436/openclaw-repo/openclaw:latest',
     '.'
   ]
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'gcloud'
+  args: [
+    'run', 'deploy', 'openclaw',
+    '--image', 'us-central1-docker.pkg.dev/gen-lang-client-0544799436/openclaw-repo/openclaw:latest',
+    '--region', 'us-central1',
+    '--platform', 'managed',
+    '--allow-unauthenticated'
+  ]
 images:
 - 'us-central1-docker.pkg.dev/gen-lang-client-0544799436/openclaw-repo/openclaw:latest'
 options:
